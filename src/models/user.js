@@ -66,22 +66,25 @@ const userSchema=new mongoose.Schema({
 
         },
         skills:{type:[String]},
+    resetOTP: { type: String }, 
+    otpExpires: { type: Date },
 
 
 },
 {timestamps:true})
-
+//generate jwt
 userSchema.methods.getJWT=async function (){
     const user=this;
-    const token= jwt.sign({_id:user._id},'thisissecretkey')
+    const token= jwt.sign({_id:user._id},'thisissecretkey',{ expiresIn: '10d' })
     return token
 }
-
+//validate password
 userSchema.methods.validatePassword=async function (passwordByUserInput){
 const user=this
 const passwordHash=user.password
 const isValidPassword=await bcrypt.compare(passwordByUserInput,passwordHash)
 return isValidPassword
 }
+
 const User= mongoose.model("User",userSchema)
 module.exports=User;

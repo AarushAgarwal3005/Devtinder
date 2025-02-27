@@ -3,6 +3,7 @@ const dbConnect = require("./config/database.js")
 const cookieParser=require("cookie-parser")
 
 const app = express()
+const PORT = process.env.PORT || 8000;
 
 app.use(express.json())
 app.use(cookieParser())
@@ -17,12 +18,16 @@ app.use("/",requestRouter)
 
 
 
-dbConnect()
-    .then(() => {
-        console.log("databse connected successfully")
-        app.listen(5000, () => {
-            console.log("server created on port 5000")
-        })
-    }).catch((err) => {
-        console.log("error connecting to database")
-    })
+const startServer = async () => {
+    try {
+        await dbConnect(); // Wait for DB connection
+        app.listen(PORT, () => {
+            console.log("✅ Server running on port 5000");
+        });
+    } catch (error) {
+        console.error("❌ Error connecting to database:", error);
+        process.exit(1); // Stop the server on DB failure
+    }
+};
+
+startServer();
