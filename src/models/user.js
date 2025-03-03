@@ -14,11 +14,12 @@ const userSchema=new mongoose.Schema({
     lastName:{
         type:String,
         required:true,
+        index:true, 
         maxLength:50
     },
     emailId:{
         type:String,
-        unique:true,
+        unique:true,//automatically makes index for it
         required:true,
         trim:true,
         validate(value){
@@ -73,6 +74,8 @@ const userSchema=new mongoose.Schema({
 
 },
 {timestamps:true})
+
+userSchema.index({firstName:1,lastName:1})//compound indexing
 //generate jwt
 userSchema.methods.getJWT=async function (){
     const user=this;
